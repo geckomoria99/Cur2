@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="description" content="EMURAI - Sistem Manajemen Gang Perumahan">
+    <title>EMURAI - Manajemen Perumahan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <i class="fas fa-home"></i>
+            </div>
+            <h1>EMURAI</h1>
+            <p>Sistem Manajemen Gang Perumahan</p>
+            <div class="splash-loader"></div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-home"></i>
+                    <span>EMURAI</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="themeToggle" class="icon-btn" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="adminToggle" class="icon-btn" title="Mode Admin">
+                    <i class="fas fa-user-shield"></i>
+                </button>
+                <div id="adminBadge" class="admin-badge hidden">
+                    <i class="fas fa-crown"></i> Admin
+                </div>
+            </div>
+        </header>
+
+        <!-- User Info Bar -->
+        <div class="user-bar">
+            <div class="greeting">
+                <span id="greetingText">Selamat Datang</span>
+                <span id="userRole" class="role-badge">Guest</span>
+            </div>
+            <div class="date-time">
+                <i class="far fa-calendar-alt"></i>
+                <span id="currentDate"></span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <section id="pageDashboard" class="page active">
+                <div class="page-header">
+                    <h2><i class="fas fa-chart-pie"></i> Dashboard</h2>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Saldo Kas</span>
+                            <span id="totalSaldo" class="stat-value">Rp 0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Pemasukan Bulan Ini</span>
+                            <span id="totalPemasukan" class="stat-value">Rp 0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card danger">
+                        <div class="stat-icon">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Pengeluaran Bulan Ini</span>
+                            <span id="totalPengeluaran" class="stat-value">Rp 0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Rumah</span>
+                            <span id="totalRumah" class="stat-value">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Info -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-bell"></i> Pengumuman Terbaru</h3>
+                    </div>
+                    <div id="latestAnnouncements" class="announcements-list">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Jadwal Ronda Hari Ini -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-shield-alt"></i> Jadwal Ronda Hari Ini</h3>
+                    </div>
+                    <div id="todayRonda" class="ronda-today">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Iuran Tertunggak -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Iuran Tertunggak</h3>
+                    </div>
+                    <div id="overduePayments" class="overdue-list">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Keuangan Page -->
+            <section id="pageKeuangan" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-coins"></i> Laporan Kas</h2>
+                    <button id="btnAddKas" class="btn-add admin-only hidden">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- Filter -->
+                <div class="filter-bar">
+                    <select id="filterBulan" class="filter-select">
+                        <option value="">Semua Bulan</option>
+                    </select>
+                    <select id="filterTipe" class="filter-select">
+                        <option value="">Semua Tipe</option>
+                        <option value="masuk">Pemasukan</option>
+                        <option value="keluar">Pengeluaran</option>
+                    </select>
+                </div>
+
+                <!-- Transaction List -->
+                <div id="transactionList" class="transaction-list">
+                    <!-- Dynamic content -->
+                </div>
+            </section>
+
+            <!-- Iuran Page -->
+            <section id="pageIuran" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-hand-holding-usd"></i> Iuran Rumah</h2>
+                    <button id="btnAddIuran" class="btn-add admin-only hidden">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- Search -->
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchRumah" placeholder="Cari nomor rumah...">
+                </div>
+
+                <!-- Filter Bulan -->
+                <div class="filter-bar">
+                    <select id="filterBulanIuran" class="filter-select full-width">
+                        <option value="">Pilih Bulan</option>
+                    </select>
+                </div>
+
+                <!-- Iuran List -->
+                <div id="iuranList" class="iuran-grid">
+                    <!-- Dynamic content -->
+                </div>
+            </section>
+
+            <!-- Ronda Page -->
+            <section id="pageRonda" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-user-shield"></i> Jadwal Ronda</h2>
+                    <button id="btnAddRonda" class="btn-add admin-only hidden">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- Week Navigation -->
+                <div class="week-nav">
+                    <button id="prevWeek" class="week-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span id="weekRange" class="week-range">Minggu Ini</span>
+                    <button id="nextWeek" class="week-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <!-- Ronda Schedule -->
+                <div id="rondaSchedule" class="ronda-schedule">
+                    <!-- Dynamic content -->
+                </div>
+            </section>
+
+            <!-- Informasi Page -->
+            <section id="pageInfo" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-bullhorn"></i> Informasi</h2>
+                    <button id="btnAddInfo" class="btn-add admin-only hidden">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+
+                <!-- Info List -->
+                <div id="infoList" class="info-list">
+                    <!-- Dynamic content -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-page="pageDashboard">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </button>
+            <button class="nav-item" data-page="pageKeuangan">
+                <i class="fas fa-coins"></i>
+                <span>Kas</span>
+            </button>
+            <button class="nav-item" data-page="pageIuran">
+                <i class="fas fa-hand-holding-usd"></i>
+                <span>Iuran</span>
+            </button>
+            <button class="nav-item" data-page="pageRonda">
+                <i class="fas fa-shield-alt"></i>
+                <span>Ronda</span>
+            </button>
+            <button class="nav-item" data-page="pageInfo">
+                <i class="fas fa-bell"></i>
+                <span>Info</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modals -->
+    <!-- Admin Login Modal -->
+    <div id="modalLogin" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3><i class="fas fa-lock"></i> Login Admin</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Kata Sandi</label>
+                    <div class="password-input">
+                        <input type="password" id="adminPassword" placeholder="Masukkan kata sandi">
+                        <button type="button" class="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Batal</button>
+                <button id="btnLogin" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Kas Modal -->
+    <div id="modalKas" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalKasTitle"><i class="fas fa-plus-circle"></i> Tambah Transaksi</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="kasId">
+                <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="date" id="kasTanggal" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipe Transaksi</label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="kasTipe" value="masuk" checked>
+                            <span class="radio-label success">
+                                <i class="fas fa-arrow-down"></i> Pemasukan
+                            </span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="kasTipe" value="keluar">
+                            <span class="radio-label danger">
+                                <i class="fas fa-arrow-up"></i> Pengeluaran
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Keterangan</label>
+                    <input type="text" id="kasKeterangan" placeholder="Contoh: Iuran bulan Januari" required>
+                </div>
+                <div class="form-group">
+                    <label>Jumlah (Rp)</label>
+                    <input type="number" id="kasJumlah" placeholder="50000" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Batal</button>
+                <button id="btnSaveKas" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Iuran Modal -->
+    <div id="modalIuran" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalIuranTitle"><i class="fas fa-plus-circle"></i> Tambah Iuran</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="iuranId">
+                <div class="form-group">
+                    <label>Nomor Rumah</label>
+                    <input type="text" id="iuranRumah" placeholder="Contoh: A-01" required>
+                </div>
+                <div class="form-group">
+                    <label>Nama Penghuni</label>
+                    <input type="text" id="iuranNama" placeholder="Nama kepala keluarga" required>
+                </div>
+                <div class="form-group">
+                    <label>Bulan</label>
+                    <input type="month" id="iuranBulan" required>
+                </div>
+                <div class="form-group">
+                    <label>Jumlah Iuran (Rp)</label>
+                    <input type="number" id="iuranJumlah" placeholder="50000" required>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="iuranStatus" value="lunas" checked>
+                            <span class="radio-label success">
+                                <i class="fas fa-check-circle"></i> Lunas
+                            </span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="iuranStatus" value="belum">
+                            <span class="radio-label danger">
+                                <i class="fas fa-times-circle"></i> Belum Bayar
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Batal</button>
+                <button id="btnSaveIuran" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Ronda Modal -->
+    <div id="modalRonda" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalRondaTitle"><i class="fas fa-plus-circle"></i> Tambah Jadwal Ronda</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="rondaId">
+                <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="date" id="rondaTanggal" required>
+                </div>
+                <div class="form-group">
+                    <label>Petugas 1</label>
+                    <input type="text" id="rondaPetugas1" placeholder="Nama petugas 1" required>
+                </div>
+                <div class="form-group">
+                    <label>Petugas 2</label>
+                    <input type="text" id="rondaPetugas2" placeholder="Nama petugas 2" required>
+                </div>
+                <div class="form-group">
+                    <label>Jam</label>
+                    <input type="text" id="rondaJam" placeholder="22:00 - 05:00" value="22:00 - 05:00">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Batal</button>
+                <button id="btnSaveRonda" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Info Modal -->
+    <div id="modalInfo" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalInfoTitle"><i class="fas fa-plus-circle"></i> Tambah Pengumuman</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="infoId">
+                <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="date" id="infoTanggal" required>
+                </div>
+                <div class="form-group">
+                    <label>Judul</label>
+                    <input type="text" id="infoJudul" placeholder="Judul pengumuman" required>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="infoKategori">
+                        <option value="umum">Umum</option>
+                        <option value="penting">Penting</option>
+                        <option value="acara">Acara</option>
+                        <option value="keamanan">Keamanan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Isi Pengumuman</label>
+                    <textarea id="infoIsi" rows="4" placeholder="Isi pengumuman..." required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Batal</button>
+                <button id="btnSaveInfo" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="modalConfirm" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Konfirmasi</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Apakah Anda yakin ingin menghapus data ini?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Batal</button>
+                <button id="btnConfirmYes" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="toast-icon fas fa-check-circle"></i>
+            <span class="toast-message">Pesan</span>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
